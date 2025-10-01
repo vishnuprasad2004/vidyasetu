@@ -30,7 +30,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="quiz"
+        name="quiz-home"
         options={{
           title: 'Quiz',
           tabBarIcon: ({ color }) => <Ionicons name="grid" size={24} color={color} />,
