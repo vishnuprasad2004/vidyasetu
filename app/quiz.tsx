@@ -63,16 +63,16 @@ const QuizScreen = () => {
   const currentQuestion = sampleQuestions[currentQuestionIndex];
 
 
-  React.useEffect(() => {
-    if (timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    } else {
-      Alert.alert("Time's up!", "The quiz has ended.");
-      setCompleted(true);
-      // submitQuiz();
-    }
-  }, [timeLeft]);
+  // React.useEffect(() => {
+  //   if (timeLeft > 0) {
+  //     const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+  //     return () => clearTimeout(timer);
+  //   } else {
+  //     Alert.alert("Time's up!", "The quiz has ended.");
+  //     setCompleted(true);
+  //     // submitQuiz();
+  //   }
+  // }, [timeLeft]);
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -180,14 +180,17 @@ const QuizScreen = () => {
       </View>
 
       {/* quiz body */}
-      <View style={{ padding: 10, flex:1,  }}>
+      <View style={{ padding: 10, flex:1 }}>
 
         {/* timer */}
-        <Text style={styles.time}>Time Left: {formatTime(timeLeft)}</Text>
+        <Text style={styles.time}>{formatTime(timeLeft)}</Text>
 
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View>
-            <Text style={{fontSize:18, color: "#ffffffdd", fontFamily: "Poppins-SemiBold"}}>{`${currentQuestionIndex + 1}.`}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent:"space-between", gap: 1, marginTop:10 }}>
+              <Text style={{fontSize:18, color: "#ffffffdd", fontFamily: "Poppins-SemiBold"}}>{`${currentQuestionIndex + 1}.`}</Text>
+              <Text style={{fontSize:12, color: "#ffffffaa", fontFamily: "Poppins-Medium"}}>{currentQuestionIndex + 1}/{sampleQuestions.length}</Text>
+            </View>
             {/* Question */}
             <Text style={styles.question}>{currentQuestion.question}</Text>
 
