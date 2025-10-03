@@ -25,6 +25,7 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
+    "githubUrl": "https://github.com/vishnuprasad2004/vidyasetu/",
     "plugins": [
       "expo-router",
       [
