@@ -2,12 +2,10 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-import Ionicons from '@expo/vector-icons/Ionicons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import Octicons from '@expo/vector-icons/Octicons';
 
 export default function TabLayout() {
@@ -23,7 +21,7 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <Octicons name="home-fill" size={24} color={color} />,
@@ -40,7 +38,7 @@ export default function TabLayout() {
         name="buddy"
         options={{
           title: 'Buddy',
-          tabBarIcon: ({ color }) => <Ionicons name="sparkles" size={24} color={color}/>,
+          tabBarIcon: ({ color }) => <Ionicons name="sparkles" size={24} color={color} />,
         }}
       />
       <Tabs.Screen
