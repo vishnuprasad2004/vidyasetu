@@ -1,10 +1,10 @@
 import QuizOption from "@/components/ui/QuizOption";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from "expo-router";
-import React from "react";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
+import React, { useEffect } from "react";
+import { Alert, BackHandler, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const sampleQuestions = [
   {
@@ -79,18 +79,24 @@ const QuizScreen = () => {
     const secs = seconds % 60;
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
-
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      goBack();
+      return true;
+    });
+    return () => backHandler.remove();
+  }, [])
   const goBack = () => {
     Alert.alert(
-      "Quit ?", 
+      "Quit ?",
       "You can complete this quiz in a jiff, you sure you want to leave ?", [
       {
         text: "Cancel",
-        onPress: () => {},
+        onPress: () => { },
         style: "cancel"
       },
-      { 
-        text: "Quit", 
+      {
+        text: "Quit",
         onPress: () => {
           router.back();
         },
@@ -106,8 +112,8 @@ const QuizScreen = () => {
     }
 
     const updatedAnswers = [...answers];
-    console.log(currentQuestionIndex +  " ," + selectedOption);
-    
+    console.log(currentQuestionIndex + " ," + selectedOption);
+
     updatedAnswers[currentQuestionIndex] = selectedOption;
     setAnswers(updatedAnswers);
     console.log(answers);
@@ -118,7 +124,7 @@ const QuizScreen = () => {
     } else {
       setCompleted(true);
       console.log(answers);
-      
+
 
       // submitQuiz();
     }
@@ -126,7 +132,7 @@ const QuizScreen = () => {
 
 
   const submitQuiz = () => {
-    
+
   };
 
   const goToPreviousQuestion = () => {
@@ -140,21 +146,21 @@ const QuizScreen = () => {
   // If the quiz is completed, show the results
   if (completed) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "#6f72df", padding:10 }}>
-        {(sampleQuestions.filter((q, index) => q.answer === answers[index]?.charAt(0)).length)/sampleQuestions.length >= 0.7 && <LottieView 
-          source={require("../assets/animations/confettiAnimation.json")} 
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#6f72df", padding: 10 }}>
+        {(sampleQuestions.filter((q, index) => q.answer === answers[index]?.charAt(0)).length) / sampleQuestions.length >= 0.7 && <LottieView
+          source={require("../assets/animations/confettiAnimation.json")}
           style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
           loop={false}
           autoPlay
         />}
-        <View style={{ flex:1, justifyContent: "center", alignItems: "center", gap: 10 }}>
-          <Text style={{fontFamily: "Poppins-Bold", fontSize: 30, color:"#ffffffdd"}}>Quiz Completed!</Text>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap: 10 }}>
+          <Text style={{ fontFamily: "Poppins-Bold", fontSize: 30, color: "#ffffffdd" }}>Quiz Completed!</Text>
           <Text style={{ marginTop: 10, fontSize: 16, color: "#ffffffdd", fontFamily: "Poppins-Medium" }}>
             You got {sampleQuestions.filter((q, index) => q.answer === answers[index]?.charAt(0)).length} out of {sampleQuestions.length} correct !
           </Text>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={{ marginTop: 20, backgroundColor: "#ffd097ee", padding: 12, paddingHorizontal: 32, borderRadius: 30, borderWidth: 1, borderColor: "#111111" }}
-            onPress={() => {router.back()}}
+            onPress={() => { router.back() }}
           >
             <Text>Go Back</Text>
           </TouchableOpacity>
@@ -166,12 +172,12 @@ const QuizScreen = () => {
 
 
   return (
-    <SafeAreaView style={{ backgroundColor: "#6f72df", flex: 1, padding:10}}>
+    <SafeAreaView style={{ backgroundColor: "#6f72df", flex: 1, padding: 10 }}>
 
       {/* header */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10, justifyContent: "space-between" }}>
 
-        <TouchableOpacity style={{ }} onPress={goBack}>
+        <TouchableOpacity style={{}} onPress={goBack}>
           <Ionicons name="chevron-back-circle-outline" size={40} color="#ffffffdd" />
         </TouchableOpacity>
         <Text style={styles.quizHeaderText}> Mathematics Quiz </Text>
@@ -180,24 +186,24 @@ const QuizScreen = () => {
       </View>
 
       {/* quiz body */}
-      <View style={{ padding: 10, flex:1 }}>
+      <View style={{ padding: 10, flex: 1 }}>
 
         {/* timer */}
         <Text style={styles.time}>{formatTime(timeLeft)}</Text>
 
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <View>
-            <View style={{ flexDirection: "row", alignItems: "center", justifyContent:"space-between", gap: 1, marginTop:10 }}>
-              <Text style={{fontSize:18, color: "#ffffffdd", fontFamily: "Poppins-SemiBold"}}>{`${currentQuestionIndex + 1}.`}</Text>
-              <Text style={{fontSize:12, color: "#ffffffaa", fontFamily: "Poppins-Medium"}}>{currentQuestionIndex + 1}/{sampleQuestions.length}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 1, marginTop: 10 }}>
+              <Text style={{ fontSize: 18, color: "#ffffffdd", fontFamily: "Poppins-SemiBold" }}>{`${currentQuestionIndex + 1}.`}</Text>
+              <Text style={{ fontSize: 12, color: "#ffffffaa", fontFamily: "Poppins-Medium" }}>{currentQuestionIndex + 1}/{sampleQuestions.length}</Text>
             </View>
             {/* Question */}
             <Text style={styles.question}>{currentQuestion.question}</Text>
 
             {/* options */}
-            <View style={{marginTop: 10, gap: 20}}>
-              <Text style={{ fontSize: 14, color:"#ffffffaa"}}>Choose your answer</Text>
-            
+            <View style={{ marginTop: 10, gap: 20 }}>
+              <Text style={{ fontSize: 14, color: "#ffffffaa" }}>Choose your answer</Text>
+
               {currentQuestion.options.map((option, index) => (
                 <QuizOption
                   key={index}
@@ -211,23 +217,23 @@ const QuizScreen = () => {
             {/* submit section */}
             <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 40, marginBottom: 20 }}>
 
-              <TouchableOpacity 
-                style={styles.previousButton} 
+              <TouchableOpacity
+                style={styles.previousButton}
                 activeOpacity={1}
                 onPress={goToPreviousQuestion}
                 disabled={currentQuestionIndex === 0} // Disable if on the first question
               >
                 <Ionicons name="chevron-back" size={40} color="#ffffffdd" />
-                <Text style={{ color:"#ffffffdd", fontFamily: "Poppins-Medium" }}>Previous</Text>
+                <Text style={{ color: "#ffffffdd", fontFamily: "Poppins-Medium" }}>Previous</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={styles.nextButton} 
+              <TouchableOpacity
+                style={styles.nextButton}
                 activeOpacity={1}
                 onPress={goToNextQuestion}
               >
-                <Text style={{ color:"#111111dd", fontFamily: "Poppins-Medium" }}>{currentQuestionIndex === sampleQuestions.length - 1 ? "Submit" : "Next"}</Text>
-                <Ionicons name="chevron-back" size={40} color="#111111dd" style={{transform:[{rotateZ:"180deg"}]}}/>
+                <Text style={{ color: "#111111dd", fontFamily: "Poppins-Medium" }}>{currentQuestionIndex === sampleQuestions.length - 1 ? "Submit" : "Next"}</Text>
+                <Ionicons name="chevron-back" size={40} color="#111111dd" style={{ transform: [{ rotateZ: "180deg" }] }} />
               </TouchableOpacity>
 
             </View>
@@ -249,15 +255,15 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Medium",
     textAlign: "center",
   },
-  question: { 
-    color: "#ffffffee", 
-    fontSize: 22, 
+  question: {
+    color: "#ffffffee",
+    fontSize: 22,
     fontFamily: "Poppins-Bold",
   },
   time: {
     color: "#111111",
     alignSelf: "flex-end",
-    fontSize: 14, 
+    fontSize: 14,
     padding: 4,
     paddingLeft: 14,
     paddingRight: 14,
@@ -266,8 +272,8 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     // marginVertical: 4,
     fontFamily: "Poppins-Medium",
-    backgroundColor:"#ffd097ee"
+    backgroundColor: "#ffd097ee"
   },
-  nextButton: { flexDirection:"row", justifyContent:"space-between", alignItems: "center", padding:8, width:"45%", backgroundColor:"#ffffffee", borderRadius:20, alignSelf:"flex-end", paddingLeft:20 },
-  previousButton: { flexDirection:"row", justifyContent:"space-between", alignItems: "center", borderWidth:1, padding:8, width:"45%", borderColor:"#ffffffdd", borderRadius:20, alignSelf:"flex-start", paddingRight:20 }
+  nextButton: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", padding: 8, width: "45%", backgroundColor: "#ffffffee", borderRadius: 20, alignSelf: "flex-end", paddingLeft: 20 },
+  previousButton: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", borderWidth: 1, padding: 8, width: "45%", borderColor: "#ffffffdd", borderRadius: 20, alignSelf: "flex-start", paddingRight: 20 }
 });
