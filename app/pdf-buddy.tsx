@@ -4,15 +4,14 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 // import PdfRendererView from 'react-native-pdf-renderer';
 import { WebView } from 'react-native-webview';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useLocalSearchParams } from 'expo-router';
 
+const PDFBuddy = () => {
 
-const PDFBuddy = ({pdfURL}: {pdfURL:string}) => {
-
-	const pdfUrl = "https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/sign/books/class_9th/science/iesc101.pdf?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV80YTIwYzQ2YS1iMmEzLTRlZWItOTFiNS0yYmUxNTg4NTVmNWMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJib29rcy9jbGFzc185dGgvc2NpZW5jZS9pZXNjMTAxLnBkZiIsImlhdCI6MTc1OTQyNzA2NiwiZXhwIjo0OTEzMDI3MDY2fQ.b5Qjs_xh6LvTGHjYt8C3SrHHvFoXqHt9-qdkKLFlOIQ";
-  const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
+  const { pdfUrl } : { pdfUrl: string } = useLocalSearchParams();
 	const [isTextInputVisible, setIsTextInputVisible] = React.useState(false);
 	const textInputAnimation = useRef(new Animated.Value(0)).current;
-
+  const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(pdfUrl)}&embedded=true`;
 
   const toggleTextInput = () => {
     if (isTextInputVisible) {
