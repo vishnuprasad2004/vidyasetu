@@ -10,6 +10,7 @@ import supabase from '@/lib/supabase';
 import { store } from '@/store';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider } from 'react-redux';
 
 export const unstable_settings = {
@@ -109,10 +110,12 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <Provider store={store}>
-      <ThemeProvider value={DefaultTheme}>
-        <RootLayoutNav />
-        <StatusBar style="dark" />
-      </ThemeProvider>
+      <GestureHandlerRootView>
+        <ThemeProvider value={DefaultTheme}>
+          <RootLayoutNav />
+          <StatusBar style="dark" />
+        </ThemeProvider>
+      </GestureHandlerRootView>
     </Provider>
   );
 }

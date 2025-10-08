@@ -5,11 +5,20 @@ import Header from "@/components/Header";
 import { useAppSelector } from "@/hooks/redux";
 import supabase from "@/lib/supabase";
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const user = useAppSelector((state) => state.auth.user);
   const router = useRouter();
+  useEffect(() => {
+    const data = async () => {
+      fetch("/api/test").then(res => res.json()).then(data => {
+        console.log(data);
+      });
+    }
+    data();
+  }, []);
   return (
     <SafeAreaView>
 
