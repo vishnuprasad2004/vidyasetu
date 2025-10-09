@@ -102,6 +102,7 @@ function RootLayoutNav() {
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
         <Stack.Screen name="quiz" options={{ headerShown: false }} />
         <Stack.Screen name="pdf-buddy" options={{ headerShown: false }} />
+        <Stack.Screen name="quiz-results" options={{ headerShown: false }} />
       </Stack.Protected>
     </Stack>
   );

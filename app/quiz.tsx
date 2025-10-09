@@ -1,10 +1,11 @@
 import QuizOption from "@/components/ui/QuizOption";
+import { useAppSelector } from "@/hooks/redux";
 import supabase from "@/lib/supabase";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
 import React, { useEffect } from "react";
-import { Alert, BackHandler, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -49,8 +50,8 @@ interface QuizDetails {
 
 
 const QuizScreen = () => {
-
-  const params = useLocalSearchParams()  ?? "";
+  const user = useAppSelector((state) => state.auth.user)
+  const params = useLocalSearchParams() ?? "";
   // console.log(params);
 
   const router = useRouter();
@@ -61,7 +62,7 @@ const QuizScreen = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0); // Track the current question
   const [answers, setAnswers] = React.useState<(string | null)[]>(Array(questions.length).fill(null));
   const [completed, setCompleted] = React.useState(false);
-  const [timeLeft, setTimeLeft] = React.useState(15*60); // 2 minutes in seconds
+  const [timeLeft, setTimeLeft] = React.useState(15 * 60); // 2 minutes in seconds
   const [loading, setLoading] = React.useState(true);
   // const currentQuestion = sampleQuestions[currentQuestionIndex];
 
@@ -98,7 +99,37 @@ const QuizScreen = () => {
       setLoading(false);
     }
   };
+  // ✅ Check if quiz already completed
+  useEffect(() => {
+    if (!params.quizId || !user?.id) return;
 
+    (async () => {
+      const { data, error } = await supabase
+        .from("quiz_result")
+        .select(`
+          id,
+          user_id,
+          marked_option,
+          questions(
+            id,
+            quiz_id
+          )
+        `)
+        .eq('quiz_id', params.quizId)
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Error fetching quiz results:", error);
+        return;
+      }
+
+      console.log("is quiz completed", JSON.stringify(data, null, 2));
+
+      if (data && data.length > 0 && data.some((item) => item.questions)) {
+        setCompleted(true);
+      }
+    })();
+  }, [params.quizId, user?.id]);
   useEffect(() => {
     fetchQuiz(params.quizId as string);
   }, [])
@@ -120,13 +151,14 @@ const QuizScreen = () => {
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
   };
 
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      goBack();
-      return true;
-    });
-    return () => backHandler.remove();
-  }, [])
+  // useEffect(() => {
+  //   if (completed) return;
+  //   const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+  //     goBack();
+  //     return true;
+  //   });
+  //   return () => backHandler.remove();
+  // }, [])
   const goBack = () => {
     Alert.alert(
       "Quit ?",
@@ -163,17 +195,32 @@ const QuizScreen = () => {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOption(null); // Reset selected option for the next question
     } else {
+      const updatedAnswers = [...answers];
+      updatedAnswers[currentQuestionIndex] = selectedOption;
+      setAnswers(updatedAnswers);
       setCompleted(true);
-      console.log(answers);
-
-
-      // submitQuiz();
+      console.log(updatedAnswers);
+      submitQuiz(updatedAnswers);
     }
   };
 
 
-  const submitQuiz = () => {
-
+  const submitQuiz = async (answers: (string | null)[]) => {
+    // Submit the answers and navigate to the results page
+    // save answers to supabase
+    const resultData = answers.map((answer, index) => ({
+      question_id: questions[index].id,
+      marked_option: answer,
+      user_id: user?.id,
+      quiz_id: params.quizId
+    }))
+    console.log("final answers", JSON.stringify(resultData, null, 2));
+    const { data, error } = await supabase
+      .from('quiz_result')
+      .insert(resultData)
+      .select()
+    console.log(data);
+    if (error) console.error('Error submitting quiz:', error);
   };
 
   const goToPreviousQuestion = () => {
@@ -204,14 +251,23 @@ const QuizScreen = () => {
         />}
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center", gap: 10 }}>
           <Text style={{ fontFamily: "Poppins-Bold", fontSize: 30, color: "#ffffffdd" }}>Quiz Completed!</Text>
-          <Text style={{ marginTop: 10, fontSize: 16, color: "#ffffffdd", fontFamily: "Poppins-Medium" }}>
+          {/* <Text style={{ marginTop: 10, fontSize: 16, color: "#ffffffdd", fontFamily: "Poppins-Medium" }}>
             You got {questions.filter((q, index) => q.correct_option === answers[index]?.charAt(0)).length} out of {questions.length} correct !
-          </Text>
+          </Text> */}
           <TouchableOpacity
             style={{ marginTop: 20, backgroundColor: "#ffd097ee", padding: 12, paddingHorizontal: 32, borderRadius: 30, borderWidth: 1, borderColor: "#111111" }}
             onPress={() => { router.back() }}
           >
             <Text>Go Back</Text>
+          </TouchableOpacity>
+          <Text style={{ marginTop: 20, fontSize: 16, color: "#ffffffdd", fontFamily: "Poppins-Medium" }}>
+            or
+          </Text>
+          <TouchableOpacity
+            style={{ marginTop: 10, backgroundColor: "#ffd097ee", padding: 12, paddingHorizontal: 32, borderRadius: 30, borderWidth: 1, borderColor: "#111111" }}
+            onPress={() => { router.push(`/quiz-results?quizId=${params?.quizId}`) }}
+          >
+            <Text>View Results</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
