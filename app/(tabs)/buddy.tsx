@@ -2,7 +2,17 @@ import Book from '@/components/ui/Book';
 import supabase from '@/lib/supabase';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface BookDetails {
@@ -19,8 +29,10 @@ interface BookDetails {
 const BuddyScreen = () => {
   const [bookDetails, setBookDetails] = useState<BookDetails[]>([]);
   const [filteredBooks, setFilteredBooks] = useState<BookDetails[]>([]);
+  const [selectedSubject, setSelectedSubject] = useState<string>('All Subjects');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+
   const fetchBooks = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -36,39 +48,95 @@ const BuddyScreen = () => {
     }
     setLoading(false);
   };
+
   useEffect(() => {
     fetchBooks();
   }, []);
 
+  // ✅ Corrected filtering logic
   useEffect(() => {
-    if (searchQuery.trim() === '') {
-      setFilteredBooks(bookDetails);
-    } else {
-      const filtered = bookDetails.filter((book) =>
-        book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        book.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        book.lang.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        book.board.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredBooks(filtered);
-    }
-  }, [searchQuery, bookDetails]);
+    const query = searchQuery.toLowerCase();
+
+    const filtered = bookDetails.filter((book) => {
+      const matchesSearch =
+        book.title.toLowerCase().includes(query) ||
+        book.subject.toLowerCase().includes(query) ||
+        book.lang.toLowerCase().includes(query) ||
+        book.board.toLowerCase().includes(query);
+
+      const matchesSubject =
+        selectedSubject === 'All Subjects' || book.subject === selectedSubject;
+
+      return matchesSearch && matchesSubject;
+    });
+
+    setFilteredBooks(filtered);
+  }, [searchQuery, selectedSubject, bookDetails]);
+
+  const getUniqueSubjects = () => [
+    'All Subjects',
+    ...Array.from(new Set(bookDetails.map((b) => b.subject))),
+  ];
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      {/* 🔍 Search Bar */}
       <View style={styles.searchBar}>
         <TextInput
           style={{ flex: 1, color: '#111' }}
-          placeholder="Search"
+          placeholder="Search books, subjects, or languages"
           placeholderTextColor="#666"
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
-        <TouchableOpacity onPress={() => setSearchQuery(searchQuery.trim())}>
-          <Ionicons name="search" size={24} color="#111" />
-        </TouchableOpacity>
+        <Ionicons name="search" size={22} color="#111" />
       </View>
 
+      {/* 🧠 Subject Filter Bar */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.subjectScroll}
+      >
+        {getUniqueSubjects().map((subject) => {
+          const isSelected = selectedSubject === subject;
+          return (
+            <TouchableOpacity
+              key={subject}
+              onPress={() => setSelectedSubject(subject)}
+              activeOpacity={0.8}
+              style={[
+                styles.subjectChip,
+                isSelected && styles.subjectChipSelected,
+                {
+                  shadowColor: isSelected ? '#444' : '#000',
+                  shadowOpacity: 0.2,
+                  shadowRadius: 4,
+                  shadowOffset: { width: 0, height: 2 },
+                  elevation: 3,
+                },
+              ]}
+            >
+              <Ionicons
+                name="book-outline"
+                size={14}
+                color={isSelected ? '#fff' : '#222'}
+                style={{ marginRight: 6 }}
+              />
+              <Text
+                style={[
+                  styles.subjectText,
+                  isSelected && styles.subjectTextSelected,
+                ]}
+              >
+                {subject}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
+
+      {/* 📚 Book List */}
       {loading ? (
         <ActivityIndicator size="large" color="#111" style={{ marginTop: 50 }} />
       ) : (
@@ -88,10 +156,16 @@ const BuddyScreen = () => {
           )}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
           ListFooterComponent={<View style={{ marginBottom: 100 }} />}
-          refreshControl={<RefreshControl refreshing={loading} onRefresh={() => {
-            fetchBooks();
-            setSearchQuery('');
-          }} />}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={() => {
+                fetchBooks();
+                setSearchQuery('');
+                setSelectedSubject('All Subjects');
+              }}
+            />
+          }
         />
       )}
     </SafeAreaView>
@@ -104,11 +178,43 @@ const styles = StyleSheet.create({
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    margin: 12,
+    marginHorizontal: 14,
+    marginVertical: 10,
     borderWidth: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 6,
+    borderColor: '#ddd',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 50,
-    backgroundColor: '#dbdbdbee',
+    backgroundColor: '#f5f5f5',
+  },
+  subjectScroll: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  subjectChip: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 30,
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    height: 30,
+    marginBottom: 10,
+  },
+  subjectChipSelected: {
+    backgroundColor: '#111',
+    borderColor: '#111',
+  },
+  subjectText: {
+    fontSize: 10,
+    color: '#222',
+    fontWeight: '500',
+  },
+  subjectTextSelected: {
+    color: '#fff',
   },
 });
