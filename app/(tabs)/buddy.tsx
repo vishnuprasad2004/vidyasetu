@@ -38,7 +38,7 @@ const BuddyScreen = () => {
     const { data, error } = await supabase
       .from('book_meta_data')
       .select('*')
-      .order('subject')
+      .order('subject',{ ascending: false })
       .order('chapter_num');
 
     if (error) console.error('Error fetching books:', error);
@@ -80,7 +80,6 @@ const BuddyScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* 🔍 Search Bar */}
       <View style={styles.searchBar}>
         <TextInput
           style={{ flex: 1, color: '#111' }}
@@ -90,6 +89,44 @@ const BuddyScreen = () => {
           onChangeText={setSearchQuery}
         />
         <Ionicons name="search" size={22} color="#111" />
+      </View>
+
+      {/* filters subjectwise */}
+      <View>
+        <FlatList
+          style={{ paddingLeft: 10 }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          ListFooterComponent={<View style={{ width: 20 }} />}
+          data={['ALL', 'Maths', 'Science', 'English', 'SST']}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={{
+                backgroundColor: searchQuery === item ? '#ffd097ee' : '#ecececff',
+                paddingVertical: 6,
+                paddingHorizontal: 18,
+                borderRadius: 20,
+                marginHorizontal: 6,
+                marginBottom: 10,
+                borderWidth: 1,
+                borderColor: '#111',
+              }}
+              onPress={() => {
+                if (item === 'ALL') {
+                  setFilteredBooks(bookDetails);
+                  setSearchQuery('');
+                }
+                else {
+                  setFilteredBooks(bookDetails.filter(book => book.subject === item));
+                  setSearchQuery(item);
+                }
+              }}
+            >
+              <Text style={{ fontFamily: 'Poppins-Medium' }}>{item}</Text>
+            </TouchableOpacity>
+          )}
+        />
       </View>
 
       {/* 🧠 Subject Filter Bar */}

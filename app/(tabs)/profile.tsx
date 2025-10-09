@@ -1,10 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, Button, StyleSheet, Text, ToastAndroid, View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Image } from 'expo-image'
 import { StatusBar } from 'expo-status-bar'
+import { useAppSelector } from '@/hooks/redux'
+import supabase from '@/lib/supabase'
 
 const ProfileScreen = () => {
+  const user = useAppSelector((state) => state.auth.user);
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'lightblue'}}>
       {/* <StatusBar backgroundColor='lightblue'/> */}
@@ -13,8 +16,32 @@ const ProfileScreen = () => {
       </View>
 
       <View style={{padding: 20, borderRadius:14 ,backgroundColor: '#fefefe', height: '100%', marginTop: -10}}>
-        <Text style={{fontSize: 24, fontWeight: 'bold', marginTop: 10}}>John Doe</Text>
+        <Text style={{fontSize: 24, fontWeight: 'bold', marginTop: 10}}>{user.name}</Text>
         {/* <Text style={{fontSize: 16, textAlign: 'center', color: 'gray'}}>. */}
+        <View>
+          <Text>
+            {JSON.stringify(user, null, 2)}
+          </Text>
+          <Button title="Logout" onPress={() => {
+            Alert.alert(
+              "Logout",
+              "Are you sure you will signout ?", [
+              {
+                text: "Cancel",
+                onPress: () => { },
+                style: "cancel"
+              },
+              {
+                text: "Logout",
+                onPress: () => {
+                  supabase.auth.signOut();
+                  ToastAndroid.show('Logout successful', ToastAndroid.LONG);
+                },
+                style: "destructive"
+              },
+            ]);
+          }} />
+        </View>
       </View>
     </SafeAreaView>
   )
