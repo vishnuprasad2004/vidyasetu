@@ -223,12 +223,12 @@ const styles = {
         paddingVertical: 12,
         borderBottomWidth: 1,
         borderBottomColor: "#333",
-        alignItems: "center",
+        alignItems: "center" as const,
     },
     chatTitle: {
         color: "#fff",
         fontSize: 18,
-        fontWeight: "600",
+        fontWeight: "bold",
     },
     messageContainer: {
         maxWidth: "75%",
@@ -266,7 +266,7 @@ const styles = {
     },
     inputWrapper: {
         flexDirection: "row",
-        alignItems: "center",
+        alignItems: "center" as "center",
         backgroundColor: "#2e2e2e",
         borderRadius: 30,
         paddingHorizontal: 12,
