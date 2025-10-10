@@ -103,6 +103,7 @@ function RootLayoutNav() {
         <Stack.Screen name="quiz" options={{ headerShown: false }} />
         <Stack.Screen name="pdf-buddy" options={{ headerShown: false }} />
         <Stack.Screen name="quiz-results" options={{ headerShown: false }} />
+        <Stack.Screen name="assignment" options={{ headerShown: false }} />
       </Stack.Protected>
     </Stack>
   );

@@ -2,17 +2,12 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
+import { useAppSelector } from "@/hooks/redux";
 
 const Header = () => {
 
-	const [user, setUser] = React.useState<any>({name: ""});
-
-	// Fetch user data from your backend or authentication service	'
-	React.useEffect(() => {
-		// Example: setUser({ name: "John Doe" });
-		setUser({ name: "John Doe" });
-	}, []);
-
+	const user = useAppSelector((state) => state.auth.user);
+	
   return (
     <View style={styles.headerContainer}>
 			<Link href={"/profile"}>
@@ -26,7 +21,7 @@ const Header = () => {
 					/>
 				</View>
 			</Link>
-			<Text>Hello {user!.name}</Text>
+			
     </View>
   );
 };
