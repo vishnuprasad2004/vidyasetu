@@ -218,7 +218,14 @@ const QuizScreen = () => {
     const { data, error } = await supabase
       .from('quiz_result')
       .insert(resultData)
-      .select()
+      .select();
+
+    // calculate XP
+    const xp = questions.filter((q, index) => q.correct_option === answers[index]?.charAt(0)).length
+    const { data:dataXp, error:errorXp } = await supabase.rpc('increase_user_xp', {
+      user_id: user?.id,
+      xp_to_add: xp * 5,
+    });
     console.log(data);
     if (error) console.error('Error submitting quiz:', error);
   };

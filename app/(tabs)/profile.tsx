@@ -1,18 +1,55 @@
 import ActionModal from '@/components/ActionModal'
 import AnimatedButton from '@/components/AnimatedButton'
+import Badge from '@/components/ui/Badge'
 import { useAppSelector } from '@/hooks/redux'
 import supabase from '@/lib/supabase'
 import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
+interface BadgeProp {
+  xp: number;
+  url: string;
+}
+
+
 const ProfileScreen = () => {
   const user = useAppSelector((state) => state.auth.user);
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
-  const [xp, setXp] = useState<number>(120);
+  const [xp, setXp] = useState<any>(0);
+  const [badges, setBadges] = useState<BadgeProp[]>([]);
+  const [userCreatedAt, setUserCreatedAt] = useState(null);
+
+  const fetchBadges = async() => {
+    try{
+      const { data, error } = await supabase.from("badges").select("*");
+      if(error) throw error;
+      setBadges(data);    
+    } catch(error:any) {
+      console.log("Error fetching the badges");
+      console.log(error);
+    }
+  }
+
+  const fetchUserDetails = async() => {
+    try{
+      const { data, error } = await supabase.from("users").select("*").eq("id", user.id).single();
+      if(error) throw error;
+      // setBadges(data);
+      setXp(data.xp);
+    } catch(error:any) {
+      console.log("Error fetching the badges");
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    fetchUserDetails();
+    fetchBadges();
+  },[]);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'lightblue' }}>
       {/* <StatusBar backgroundColor='lightblue'/> */}
@@ -62,18 +99,17 @@ const ProfileScreen = () => {
           </View>
 
           <Text style={styles.headerText}>Badges</Text>
+          <Text style={{ fontFamily:"Poppins-SemiBold", fontSize:12, marginTop:-12 }}>Unlock all bagdes by completing quizzes and earning XP points.</Text>
           <View>
             <FlatList
-              data={["https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/public/badges/100xp.png",""]}
-              renderItem={(item) => (<Image source={{uri:item.item}} style={{  width:100, height:115 }}/>)}
+              horizontal
+              data={badges}
+              renderItem={(item) => (<Badge url={item.item.url} xp={item.item.xp} userXp={xp} />)}
               ListEmptyComponent={(<View style={{marginBottom:200}}></View>)}
             />
-            {/* <FlatList
-              horizontal
-              data={["https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/public/badges/200xp.png","https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/public/badges/300xp.png"]}
-              renderItem={(item) => (<Image source={{uri:item.item}} style={{ padding:12, width:100, height:115 }}/>)}
-              ListEmptyComponent={(<View style={{marginBottom:200}}></View>)}
-            /> */}
+
+            <View style={{marginBottom:100}}></View>
+            
           </View>
         </View>
           <AnimatedButton
