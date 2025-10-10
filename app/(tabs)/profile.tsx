@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 const ProfileScreen = () => {
   const user = useAppSelector((state) => state.auth.user);
   const [showLogoutAlert, setShowLogoutAlert] = useState(false);
+  const [xp, setXp] = useState<number>(120);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'lightblue' }}>
       {/* <StatusBar backgroundColor='lightblue'/> */}
@@ -55,7 +56,7 @@ const ProfileScreen = () => {
           <View style={styles.XPContainer}>
             <Image source={require("@/assets/images/High Voltage.png")} style={{width:25, height:35}}/>
             <View style={{}}>
-              <Text style={{fontFamily:"Poppins-SemiBold", fontSize:20, marginBottom:-8}}>{"2000"}</Text>
+              <Text style={{fontFamily:"Poppins-SemiBold", fontSize:20, marginBottom:-8}}>{xp}</Text>
               <Text style={{fontFamily:"Poppins-Bold", fontSize:12, color:"#555"}}>Total XP</Text>
             </View>
           </View>
@@ -63,10 +64,16 @@ const ProfileScreen = () => {
           <Text style={styles.headerText}>Badges</Text>
           <View>
             <FlatList
-              data={[]}
-              renderItem={(item) => (<View></View>)}
+              data={["https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/public/badges/100xp.png",""]}
+              renderItem={(item) => (<Image source={{uri:item.item}} style={{  width:100, height:115 }}/>)}
               ListEmptyComponent={(<View style={{marginBottom:200}}></View>)}
             />
+            {/* <FlatList
+              horizontal
+              data={["https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/public/badges/200xp.png","https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/public/badges/300xp.png"]}
+              renderItem={(item) => (<Image source={{uri:item.item}} style={{ padding:12, width:100, height:115 }}/>)}
+              ListEmptyComponent={(<View style={{marginBottom:200}}></View>)}
+            /> */}
           </View>
         </View>
           <AnimatedButton
