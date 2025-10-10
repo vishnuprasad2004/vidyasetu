@@ -104,6 +104,7 @@ function RootLayoutNav() {
         <Stack.Screen name="pdf-buddy" options={{ headerShown: false }} />
         <Stack.Screen name="quiz-results" options={{ headerShown: false }} />
         <Stack.Screen name="assignment" options={{ headerShown: false }} />
+        <Stack.Screen name="generated-ques" options={{ headerShown: false }} />
       </Stack.Protected>
     </Stack>
   );

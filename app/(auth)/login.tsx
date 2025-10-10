@@ -1,3 +1,4 @@
+import AnimatedButton from '@/components/AnimatedButton'
 import supabase from '@/lib/supabase'
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons'
 import { makeRedirectUri } from 'expo-auth-session'
@@ -6,7 +7,6 @@ import { useRouter } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
 import { useState } from 'react'
 import {
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -15,7 +15,7 @@ import {
   TextInput,
   ToastAndroid,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -156,14 +156,21 @@ function Login() {
             />
           </View>
 
-          <TouchableOpacity style={styles.signupButton} onPress={handleEmailLogin}>
+          {/* <TouchableOpacity style={styles.signupButton} onPress={handleEmailLogin}>
             {loading ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
               <Text style={styles.signupText}>Log In</Text>
             )}
-          </TouchableOpacity>
-
+          </TouchableOpacity> */}
+          <View style={{ marginTop: 20, width: '100%' }}>
+            <AnimatedButton
+              title="Log In"
+              onPress={handleEmailLogin}
+              isLoading={loading}
+              width={'100%'}
+            />
+          </View>
           <View style={styles.footer}>
             <Text style={styles.footerText}>Don’t have an account? </Text>
             <TouchableOpacity onPress={() => router.push('/signup')}>

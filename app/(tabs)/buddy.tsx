@@ -6,12 +6,11 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -38,7 +37,7 @@ const BuddyScreen = () => {
     const { data, error } = await supabase
       .from('book_meta_data')
       .select('*')
-      .order('subject',{ ascending: false })
+      .order('subject', { ascending: false })
       .order('chapter_num');
 
     if (error) console.error('Error fetching books:', error);
@@ -129,7 +128,7 @@ const BuddyScreen = () => {
         />
       </View>
 
-      {/* 🧠 Subject Filter Bar */}
+      {/* 🧠 Subject Filter Bar
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -171,7 +170,7 @@ const BuddyScreen = () => {
             </TouchableOpacity>
           );
         })}
-      </ScrollView>
+      </ScrollView> */}
 
       {/* 📚 Book List */}
       {loading ? (

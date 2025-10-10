@@ -1,10 +1,10 @@
+import AnimatedButton from '@/components/AnimatedButton';
 import supabase from '@/lib/supabase';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -117,11 +117,14 @@ const SignupScreen = () => {
             />
           </View>
 
-          <TouchableOpacity style={styles.signupButton}
-            onPress={handelEmailSignUp}
-          >
-            {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.signupText}>Sign Up</Text>}
-          </TouchableOpacity>
+          <View style={{ marginTop: 20, width: '100%' }}>
+            <AnimatedButton
+              title="Log In"
+              onPress={handelEmailSignUp}
+              isLoading={loading}
+              width={'100%'}
+            />
+          </View>
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account? </Text>

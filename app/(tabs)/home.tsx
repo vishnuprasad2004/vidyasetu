@@ -6,7 +6,7 @@ import { useAppSelector } from "@/hooks/redux";
 import supabase from "@/lib/supabase";
 import { Link, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
@@ -21,7 +21,7 @@ export default function HomeScreen() {
     const { data, error } = await supabase
       .from('quizzes')
       .select('*')
-      .order('created_at',{ ascending: false })
+      .order('created_at', { ascending: false })
       .limit(2);
 
     if (error) console.error('Error fetching quizzes:', error);
@@ -31,7 +31,7 @@ export default function HomeScreen() {
     setLoading(false);
   }
 
-  
+
   useEffect(() => {
     fetchQuizzes();
   }, []);
@@ -46,17 +46,17 @@ export default function HomeScreen() {
   }, []);
   return (
     <SafeAreaView>
-      <Header />
-      <View>
-        <Text style={{fontFamily: "Poppins-Medium", paddingLeft:14}}>Hello, {user!.name}</Text>
 
-        {/* <AssignmentComp/> */}
+      <Header />
+      <Text style={{ fontFamily: "Poppins-Medium", paddingLeft: 14 }}>Hello, {user!.name}</Text>
+      <ScrollView>
+        <AssignmentComp />
 
         <View>
-          <View style={{flexDirection:"row", justifyContent:"space-between", alignItems:"center", paddingHorizontal:14 }}>
-            <Text style={{fontFamily: "Poppins-SemiBold", fontSize: 20}}>Latest Quiz</Text>
+          <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 14 }}>
+            <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 20 }}>Latest Quiz</Text>
             <Link href={"/quiz-home"}>
-              <Text style={{fontFamily: "Poppins-SemiBold", fontSize: 14, color:"#55555577"}}>See All</Text>
+              <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 14, color: "#55555577" }}>See All</Text>
             </Link>
           </View>
           {loading ? (
@@ -66,7 +66,7 @@ export default function HomeScreen() {
               data={latestQuizzes}
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => (
-                <Quiz quizDetails={item}/>
+                <Quiz quizDetails={item} />
               )}
               ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
               ListFooterComponent={<View style={{ marginBottom: 200 }} />}
@@ -76,7 +76,7 @@ export default function HomeScreen() {
             />
           )}
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

@@ -1,12 +1,15 @@
+import ActionModal from '@/components/ActionModal'
+import AnimatedButton from '@/components/AnimatedButton'
 import { useAppSelector } from '@/hooks/redux'
 import supabase from '@/lib/supabase'
 import { Image } from 'expo-image'
-import React from 'react'
-import { Alert, Button, StyleSheet, Text, ToastAndroid, View } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 const ProfileScreen = () => {
   const user = useAppSelector((state) => state.auth.user);
+  const [showLogoutAlert, setShowLogoutAlert] = useState(false);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'lightblue' }}>
       {/* <StatusBar backgroundColor='lightblue'/> */}
@@ -18,28 +21,21 @@ const ProfileScreen = () => {
         <Text style={{ fontSize: 24, fontWeight: 'bold', marginTop: 10 }}>{user.name}</Text>
         <Text style={{ fontSize: 16, marginBottom: 10, color: 'gray' }}>{user.email}</Text>
         <View>
-          <Button
-            title="Logout" color='red' onPress={() => {
-              Alert.alert(
-                "Logout",
-                "Are you sure you will signout ?", [
-                {
-                  text: "Cancel",
-                  onPress: () => { },
-                  style: "cancel"
-                },
-                {
-                  text: "Logout",
-                  onPress: () => {
-                    supabase.auth.signOut();
-                    ToastAndroid.show('Logout successful', ToastAndroid.LONG);
-                  },
-                  style: "destructive"
-                },
-              ]);
-            }}
+          <AnimatedButton
+            width="100%"
+            title='Sign Out'
+            color={"#fb5219ff"}
+            shadowColor={"#d03704ff"}
+            onPress={() => setShowLogoutAlert(true)}
           />
         </View>
+        <ActionModal
+          visible={showLogoutAlert}
+          title='Logout'
+          message="Are you sure you want to sign out?"
+          onCancel={() => setShowLogoutAlert(false)}
+          onConfirm={() => supabase.auth.signOut()}
+        />
       </View>
     </SafeAreaView>
   )
