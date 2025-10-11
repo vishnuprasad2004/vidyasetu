@@ -1,10 +1,9 @@
+import FloatingChatbot from '@/components/FloatingChatbot'
 import Quiz from '@/components/ui/Quiz'
 import supabase from '@/lib/supabase'
 import { Ionicons } from '@expo/vector-icons'
-import { Link } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
 interface QuizDetails {
   id: string;
@@ -23,7 +22,7 @@ const QuizScreen = () => {
   const [filteredQuizzes, setFilteredQuizzes] = useState<QuizDetails[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
 
 
   const fetchQuizzes = async () => {
@@ -37,30 +36,30 @@ const QuizScreen = () => {
       setAllQuizzes(data || []);
       setFilteredQuizzes(data || []);
       // console.log(data);
-      
+
     }
     setLoading(false);
   }
 
   useEffect(() => {
     fetchQuizzes();
-  },[])
+  }, [])
 
   useEffect(() => {
-      if (searchQuery.trim() === '') {
-        setFilteredQuizzes(allQuizzes);
-      } else {
-        const filtered = allQuizzes.filter((book) =>
-          book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.lang.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-        setFilteredQuizzes(filtered);
-      }
-    }, [searchQuery, allQuizzes]);
+    if (searchQuery.trim() === '') {
+      setFilteredQuizzes(allQuizzes);
+    } else {
+      const filtered = allQuizzes.filter((book) =>
+        book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        book.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        book.lang.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredQuizzes(filtered);
+    }
+  }, [searchQuery, allQuizzes]);
 
   return (
-    <SafeAreaView>
+    <View style={{ height: "100%", marginTop: 40 }}>
       <View style={styles.searchBar}>
         <TextInput
           style={{ flex: 1, color: '#111' }}
@@ -119,7 +118,7 @@ const QuizScreen = () => {
           data={filteredQuizzes}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <Quiz quizDetails={item}/>
+            <Quiz quizDetails={item} />
           )}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
           ListFooterComponent={<View style={{ marginBottom: 200 }} />}
@@ -129,7 +128,8 @@ const QuizScreen = () => {
           }} />}
         />
       )}
-    </SafeAreaView>
+      <FloatingChatbot />
+    </View>
   )
 }
 

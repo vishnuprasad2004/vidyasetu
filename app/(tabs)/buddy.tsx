@@ -1,9 +1,10 @@
+import FloatingChatbot from '@/components/FloatingChatbot';
 import Book from '@/components/ui/Book';
 import supabase from '@/lib/supabase';
 import { Ionicons } from '@expo/vector-icons';
+import LottieView from 'lottie-react-native';
 import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
   FlatList,
   RefreshControl,
   StyleSheet,
@@ -12,7 +13,6 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface BookDetails {
   id: number;
@@ -78,7 +78,7 @@ const BuddyScreen = () => {
   ];
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ height: "100%", marginTop: 40 }}>
       <View style={styles.searchBar}>
         <TextInput
           style={{ flex: 1, color: '#111' }}
@@ -174,7 +174,15 @@ const BuddyScreen = () => {
 
       {/* 📚 Book List */}
       {loading ? (
-        <ActivityIndicator size="large" color="#111" style={{ marginTop: 50 }} />
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <LottieView
+            source={require("@/assets/animations/loadingAnimation1.json")}
+            style={{ width: "80%", height: "30%" }}
+            loop
+            autoPlay
+          />
+          <Text style={{ color: "#111", fontSize: 20, fontFamily: "Poppins-Bold" }}>Loading Books...</Text>
+        </View>
       ) : (
         <FlatList
           data={filteredBooks}
@@ -204,7 +212,8 @@ const BuddyScreen = () => {
           }
         />
       )}
-    </SafeAreaView>
+      <FloatingChatbot />
+    </View>
   );
 };
 

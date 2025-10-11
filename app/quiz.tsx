@@ -218,14 +218,7 @@ const QuizScreen = () => {
     const { data, error } = await supabase
       .from('quiz_result')
       .insert(resultData)
-      .select();
-
-    // calculate XP
-    const xp = questions.filter((q, index) => q.correct_option === answers[index]?.charAt(0)).length
-    const { data:dataXp, error:errorXp } = await supabase.rpc('increase_user_xp', {
-      user_id: user?.id,
-      xp_to_add: xp * 5,
-    });
+      .select()
     console.log(data);
     if (error) console.error('Error submitting quiz:', error);
   };
@@ -241,7 +234,13 @@ const QuizScreen = () => {
     // Show a loading indicator while fetching data
     return (
       <SafeAreaView style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#6f72df" }}>
-        <Text style={{ color: "#ffffff", fontSize: 18, fontFamily: "Poppins-Medium" }}>Loading Quiz...</Text>
+        <LottieView
+          source={require("../assets/animations/loadingAnimation.json")}
+          style={{ width: "80%", height: "30%" }}
+          loop
+          autoPlay
+        />
+        <Text style={{ color: "white", fontSize: 20, fontFamily: "Poppins-Bold" }}>Loading Quizzes...</Text>
       </SafeAreaView>
     );
   }

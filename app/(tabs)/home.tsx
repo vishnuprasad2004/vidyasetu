@@ -1,4 +1,5 @@
 
+import FloatingChatbot from "@/components/FloatingChatbot";
 import Header from "@/components/Header";
 import AssignmentComp from "@/components/ui/AssignmentComp";
 import Quiz from "@/components/ui/Quiz";
@@ -7,7 +8,6 @@ import supabase from "@/lib/supabase";
 import { Link, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const user = useAppSelector((state) => state.auth.user);
@@ -45,7 +45,7 @@ export default function HomeScreen() {
     data();
   }, []);
   return (
-    <SafeAreaView>
+    <View style={{ height: "100%", marginTop: 40 }}>
 
       <Header />
       <Text style={{ fontFamily: "Poppins-Medium", paddingLeft: 14 }}>Hello, {user!.name}</Text>
@@ -77,7 +77,8 @@ export default function HomeScreen() {
           )}
         </View>
       </ScrollView>
-    </SafeAreaView>
+      <FloatingChatbot />
+    </View>
   );
 }
 
