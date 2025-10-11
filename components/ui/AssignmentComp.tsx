@@ -57,7 +57,7 @@ const AssignmentComp = () => {
 	}, []);
 
 	return (
-		<View style={{ padding: 14 }}>
+		<View style={{ padding: 16, backgroundColor:"#ddd", margin:12, borderRadius:12 }}>
 			<View style={styles.headerContainer}>
 				<Text style={styles.header}>Assignments</Text>
 				<Ionicons name='information-circle-outline' size={20} color="black" onPress={() => setShowCustomAlert(true)} />

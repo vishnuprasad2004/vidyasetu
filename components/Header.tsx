@@ -14,7 +14,7 @@ const Header = () => {
 				<View style={styles.userProfileIcon}>
 					<Image
 						source={{
-							uri: "https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/sign/assets/avatars/avatar_0.svg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV80YTIwYzQ2YS1iMmEzLTRlZWItOTFiNS0yYmUxNTg4NTVmNWMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvYXZhdGFycy9hdmF0YXJfMC5zdmciLCJpYXQiOjE3NTkwODEyMTUsImV4cCI6NDkxMjY4MTIxNX0.27epMioe8AWazDoaQ_yfLo4KJ8Y45V2G5c40F6IbOxs",
+							uri: "https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/sign/assets/avatars/avatar_4.svg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV80YTIwYzQ2YS1iMmEzLTRlZWItOTFiNS0yYmUxNTg4NTVmNWMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvYXZhdGFycy9hdmF0YXJfNC5zdmciLCJpYXQiOjE3NjAxNTQ2MzIsImV4cCI6NDkxMzc1NDYzMn0.AsyuRrUbzMlSjDEBCAH11VGhHubi5e4LCz2DWcsN_e4",
 						}}
 						style={{ width: 60, height: 60, transform: [{ translateX: -6 }], zIndex:10 }}
 						transition={100}

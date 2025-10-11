@@ -5,6 +5,7 @@ import { useAppSelector } from '@/hooks/redux'
 import supabase from '@/lib/supabase'
 import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
+import { router } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -47,14 +48,22 @@ const ProfileScreen = () => {
   }
 
   useEffect(() => {
-    fetchUserDetails();
     fetchBadges();
+  })
+
+  useEffect(() => {
+    fetchUserDetails();
   },[]);
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'lightblue' }}>
       {/* <StatusBar backgroundColor='lightblue'/> */}
+
+      <TouchableOpacity activeOpacity={1} style={{ position:"absolute", top:40, right:20, zIndex:22 }} onPress={()=> {router.push("/settings")}}>
+        <Ionicons name="settings-outline" size={26} color="black" style={{}}/>
+      </TouchableOpacity>
+
       <View style={{ alignItems: 'center', backgroundColor: 'lightblue', overflow: 'hidden', height: 200 }}>
-        <Image source={{ uri: 'https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/sign/assets/avatars/avatar_0.svg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV80YTIwYzQ2YS1iMmEzLTRlZWItOTFiNS0yYmUxNTg4NTVmNWMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvYXZhdGFycy9hdmF0YXJfMC5zdmciLCJpYXQiOjE3NTkwODEyMTUsImV4cCI6NDkxMjY4MTIxNX0.27epMioe8AWazDoaQ_yfLo4KJ8Y45V2G5c40F6IbOxs' }} style={{ width: 270, height: 270, }} />
+        <Image source={{ uri: 'https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/sign/assets/avatars/avatar_4.svg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV80YTIwYzQ2YS1iMmEzLTRlZWItOTFiNS0yYmUxNTg4NTVmNWMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvYXZhdGFycy9hdmF0YXJfNC5zdmciLCJpYXQiOjE3NjAxNTQ2MzIsImV4cCI6NDkxMzc1NDYzMn0.AsyuRrUbzMlSjDEBCAH11VGhHubi5e4LCz2DWcsN_e4' }} style={{ width: 270, height: 270, }} />
       </View>
 
       <ScrollView style={{ padding: 20, backgroundColor: '#fefefe', height: '100%', marginTop: -18, transform:[{translateY:18}] }}>
@@ -112,21 +121,14 @@ const ProfileScreen = () => {
             
           </View>
         </View>
-          <AnimatedButton
-            width="100%"
-            title='Sign Out'
-            color={"#fb5219ff"}
-            shadowColor={"#d03704ff"}
-            onPress={() => setShowLogoutAlert(true)}
-          />
         </View>
-        <ActionModal
+        {/* <ActionModal
           visible={showLogoutAlert}
           title='Logout'
           message="Are you sure you want to sign out?"
           onCancel={() => setShowLogoutAlert(false)}
           onConfirm={() => supabase.auth.signOut()}
-        />
+        /> */}
         <View style={{marginBottom:60}}></View>
       </ScrollView>
     </SafeAreaView>

@@ -1,37 +1,32 @@
+import AnimatedButton from '@/components/AnimatedButton'
 import Button from '@/components/Button'
-import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
+import LottieView from 'lottie-react-native'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 const WelcomeScreen = () => {
   const router = useRouter()
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#ffff" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#ffd097ee", padding:16 }}>
       <View style={styles.container}>
-        <Text style={styles.welcomeText}>Welcome to</Text>
-        <Text style={styles.title}>Vidyasetu</Text>
-        <Text style={styles.subtitle}>Your Bridge to a Brighter Future.</Text>
-        <Image source={require('@/assets/images/study.svg')}
-          style={styles.studyImage}
-          contentFit="cover"
+        <LottieView
+          source={require("@/assets/animations/The girl with the flag.json")}
+          style={{ width:350, height:350, marginLeft:-100 }}
+          autoPlay
+          loop
         />
+        {/* <Text style={styles.welcomeText}>Welcome to</Text>
+        <Text style={styles.title}>Vidyasetu</Text> */}
+        <Text style={{fontFamily:"Poppins-Bold", fontSize:48, lineHeight:52 }}>Welcome to Vidyasetu</Text>
+        <Text style={{fontFamily:"Poppins-SemiBold", fontSize:20, color:"#444"}}>Your Bridge to a Brighter Future.</Text>
+        {/* <Text style={styles.subtitle}>Your Bridge to a Brighter Future.</Text> */}
         <View style={styles.buttonContainer}>
-          <Button
-            title="Login"
-            onPress={() => {
-              router.push('/login')
-            }}
-            style={{ width: "50%" }}
-            isActive={false}
-          />
-          <Button
-            title='Sign Up'
-            onPress={() => {
-              router.push("/signup")
-            }}
-            style={{ width: "50%" }}
-            isActive />
+            <AnimatedButton
+              onPress={() => router.push("/(auth)/signup")}
+              title='Get Started'
+              width={"100%"}
+            />
         </View>
       </View>
     </SafeAreaView>
@@ -44,6 +39,7 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 20,
     alignItems: 'center',
+    height:"100%"
   },
   welcomeText: {
     fontSize: 30,
@@ -71,6 +67,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     gap: 10,
-    paddingHorizontal: 10
+    // paddingHorizontal: 10,
+    position:"absolute",
+    bottom:12
   }
 })
