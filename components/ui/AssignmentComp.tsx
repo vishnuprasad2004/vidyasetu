@@ -129,7 +129,7 @@ const AssignmentComp = () => {
 					onPress={() => {
 						router.push(`/generated-ques?subject=${selectedSubject}&chapter=${selectedChapter}&description=${value}`);
 					}}
-					title="Submit"
+					title="Generate Assignment"
 					width={"100%"}
 				/>
 			</View>

@@ -3,7 +3,7 @@ import { useAppSelector } from '@/hooks/redux'
 import supabase from '@/lib/supabase'
 import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
-import { Link, router } from 'expo-router'
+import { Link, router, useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState } from 'react'
 import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -15,61 +15,14 @@ interface BadgeProp {
 }
 
 
-const ProfileScreen = () => {
-  const user = useAppSelector((state) => state.auth.user);
-  const [showLogoutAlert, setShowLogoutAlert] = useState(false);
+const FriendProfile = () => {
+  const {friend_id} = useLocalSearchParams();
+  const [user, setUser] = useState<any>();
   const [xp, setXp] = useState<any>(0);
   const [badges, setBadges] = useState<BadgeProp[]>([]);
-  const [userCreatedAt, setUserCreatedAt] = useState(null);
-  const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
-  const [friendEmail, setFriendEmail] = useState("");
   const [friendsData, setFriendsData] = useState<any>([]);
 
-  const addFollower = async () => {
-    if (!friendEmail.trim()) {
-      Alert.alert("Error", "Email cannot be empty.");
-      setIsAddFriendModalVisible(false);
-      return;
-    }
-    try {
-      const { data, error } = await supabase.from("users").select("id").eq("email",friendEmail.trim()).single();
-      if(error) {
-        throw error;
-      }
-      const { data:friendsData, error:friendsError } = await supabase.from("friends").insert({
-        user_id: user?.id, // Current user's ID
-        follower: data.id, // Friend's email
-      });
 
-      if (error) {
-        console.error("Error adding friend:", error);
-        Alert.alert("Error", "Could not add friend. Please try again.");
-      } else {
-        Alert.alert("Success", "Friend added successfully!");
-        console.log("Friend added:", data);
-      }
-    } catch (err) {
-      console.error("Unexpected error:", err);
-      Alert.alert("Error", "Something went wrong. Please try again.");
-    } finally {
-      setIsAddFriendModalVisible(false); // Close the modal
-      setFriendEmail(""); // Clear the input
-    }
-  };
-
-  const fetchFriends = async() => {
-    try{
-      const { data, error } = await supabase.from("friends").select(`
-        follower(id,avatar,full_name,xp)  
-      `).eq("user_id", user.id);
-      setFriendsData(data);
-      if(error) throw error; 
-      console.log(data);
-    } catch(error:any) {
-      console.log("Error fetching the badges");
-      console.log(error);
-    }
-  }
 
   const fetchBadges = async() => {
     try{
@@ -84,10 +37,10 @@ const ProfileScreen = () => {
 
   const fetchUserDetails = async() => {
     try{
-      const { data, error } = await supabase.from("users").select("*").eq("id", user.id).single();
+      const { data, error } = await supabase.from("users").select("*").eq("id", friend_id).single();
       if(error) throw error;
-      // setBadges(data);
-      setXp(data.xp);
+      setUser(data);
+      setXp(data?.xp);
     } catch(error:any) {
       console.log("Error fetching the badges");
       console.log(error);
@@ -100,26 +53,20 @@ const ProfileScreen = () => {
   
   useEffect(() => {
     fetchUserDetails();
-    fetchFriends();
-    setIsAddFriendModalVisible(false);
+
   },[]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'lightblue' }}>
-      {/* <StatusBar backgroundColor='lightblue'/> */}
-
-      <TouchableOpacity activeOpacity={1} style={{ position:"absolute", top:40, right:20, zIndex:22 }} onPress={()=> {router.push("/settings")}}>
-        <Ionicons name="settings-outline" size={26} color="black" style={{}}/>
-      </TouchableOpacity>
 
       <View style={{ alignItems: 'center', backgroundColor: 'lightblue', overflow: 'hidden', height: 200 }}>
-        <Image source={{ uri: 'https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/sign/assets/avatars/avatar_4.svg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV80YTIwYzQ2YS1iMmEzLTRlZWItOTFiNS0yYmUxNTg4NTVmNWMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvYXZhdGFycy9hdmF0YXJfNC5zdmciLCJpYXQiOjE3NjAxNTQ2MzIsImV4cCI6NDkxMzc1NDYzMn0.AsyuRrUbzMlSjDEBCAH11VGhHubi5e4LCz2DWcsN_e4' }} style={{ width: 270, height: 270, }} />
+        <Image source={{ uri: user?.avatar }} style={{ width: 270, height: 270, }} />
       </View>
 
       <ScrollView style={{ padding: 20, backgroundColor: '#fefefe', height: '100%', marginTop: -18, transform:[{translateY:18}] }}>
         
-        <Text style={{ fontSize: 24, fontFamily: 'Poppins-Bold', marginTop: 10 }}>{user.name}</Text>
-        <Text style={{ fontSize: 16, marginBottom: 10, color: 'gray' }}>{user.email}</Text>
+        <Text style={{ fontSize: 24, fontFamily: 'Poppins-Bold', marginTop: 10 }}>{user?.full_name}</Text>
+        <Text style={{ fontSize: 16, marginBottom: 10, color: 'gray' }}>{user?.email}</Text>
         <View>
           <View>
           {/* followers and following section */}
@@ -127,37 +74,15 @@ const ProfileScreen = () => {
             {/* following */}
             <View>
               {/* <Text style={styles.followNumber}>15</Text> */}
-              <Text style={styles.followText}>{0} Follower</Text>
+              <Text style={styles.followText}>{1} Follower</Text>
             </View>
             {/* line */}
             <View style={{width:2, backgroundColor:"#aaa", borderRadius:2}}></View>
             {/* followers */}
             <View>
               {/* <Text style={styles.followNumber}>15</Text> */}
-              <Text style={styles.followText}>{1} Following</Text>
+              <Text style={styles.followText}>{0} Following</Text>
             </View>
-          </View>
-
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={styles.addFriendsButton}
-            onPress={() => setIsAddFriendModalVisible(true)}
-          >
-            <Ionicons name="person-add" size={20} color="#1cb0f6" />
-            <Text style={{color:"#1cb0f6", fontFamily:"Poppins-SemiBold", fontSize:16}}>ADD FRIENDS</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.headerText}>Friends</Text>
-          <View>
-            <FlatList
-              horizontal
-              data={friendsData}
-              renderItem={(item) => (
-                <Link href={{ pathname:"/friend-profile", params: { friend_id: item.item.follower.id } }}>
-                  <Image source={{uri: item.item.follower.avatar}} style={{ height:60, width:60, borderRadius:70, backgroundColor:"wheat" }}/>
-                </Link>
-              )}
-            />
           </View>
 
           <Text style={styles.headerText}>Overview</Text>
@@ -189,40 +114,12 @@ const ProfileScreen = () => {
       </ScrollView>
 
 
-        {isAddFriendModalVisible && (
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Add Friend</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="Enter friend's email"
-                placeholderTextColor="#888"
-                value={friendEmail}
-                onChangeText={setFriendEmail}
-                keyboardType="email-address"
-              />
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={styles.modalButtonCancel}
-                  onPress={() => {
-                    setIsAddFriendModalVisible(false);
-                    setFriendEmail("");
-                  }}
-                >
-                  <Text style={styles.modalButtonText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.modalButtonAdd} onPress={addFollower}>
-                  <Text style={styles.modalButtonText}>Add</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        )}
+
     </SafeAreaView>
   )
 }
 
-export default ProfileScreen
+export default FriendProfile
 
 const styles = StyleSheet.create({
   XPContainer: {

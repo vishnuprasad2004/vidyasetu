@@ -107,6 +107,7 @@ function RootLayoutNav() {
         <Stack.Screen name="generated-ques" options={{ headerShown: false }} />
         <Stack.Screen name="settings" options={{ headerShown: false }} />
         <Stack.Screen name="ai-bot" options={{ headerShown: false }} />
+        <Stack.Screen name="friend-profile" options={{ headerShown: false }} />
       </Stack.Protected>
     </Stack>
   );
