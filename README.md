@@ -26,6 +26,13 @@ The app also has a general help and assistance bot called “GURU” for any out
 We also have added an Assignment Generator for creating custom subjective questions.
 
 ## Screenshots
+<p align="left">
+   <img width="270" height="337" alt="6" src="https://github.com/user-attachments/assets/f22e43a1-b2ed-4812-aa79-9dafd91eb22c" />
+   <img width="270" height="337" alt="5" src="https://github.com/user-attachments/assets/84f9a771-aff1-4571-83ff-056851650c26" />
+   <img width="270" height="337" alt="4" src="https://github.com/user-attachments/assets/b64e236b-9248-4d6c-81db-a6895f30b600" />
+   <img width="270" height="337" alt="3" src="https://github.com/user-attachments/assets/ce6cb4bc-2166-4a06-9dbd-c60f85902529" />
+   <img width="270" height="337" alt="2" src="https://github.com/user-attachments/assets/9cc0d202-1d16-47c4-af22-d04248f0b4d1" />
+</p>
 
 
 ## Tools and Technologies Used
