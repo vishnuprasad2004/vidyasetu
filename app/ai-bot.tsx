@@ -35,7 +35,7 @@ const AIBot = () => {
     setLoading(true);
 
     try {
-      const res = await fetch("https://vidyasetu-ai.onrender.com/api/ai/buddy", {
+      const res = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/ai/buddy`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: newMessages }),

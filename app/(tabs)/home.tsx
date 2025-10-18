@@ -1,4 +1,5 @@
 
+import { ExternalLink } from "@/components/external-link";
 import FloatingChatbot from "@/components/FloatingChatbot";
 import Header from "@/components/Header";
 import AssignmentComp from "@/components/ui/AssignmentComp";
@@ -50,6 +51,24 @@ export default function HomeScreen() {
       <Header />
       <Text style={{ fontFamily: "Poppins-Medium", paddingLeft: 14 }}>Hello, {user!.name}</Text>
       <ScrollView>
+        <ExternalLink
+          href={"https://cbseacademic.nic.in/curriculum_2026.html"}
+          style={{
+            fontFamily: "Poppins-SemiBold",
+            fontSize: 16,
+            color: "#111",
+            marginTop: 20,
+            marginHorizontal: 14,
+            textAlign: "center",
+            borderWidth: 2,
+            borderColor: "#6f72df",
+            padding: 6,
+            borderRadius: 12,
+            borderBottomWidth: 4
+          }}
+        >
+          CBSE Curriculum 2025-26
+        </ExternalLink>
         <AssignmentComp />
 
         <View>

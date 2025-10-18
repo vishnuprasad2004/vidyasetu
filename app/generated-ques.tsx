@@ -23,7 +23,7 @@ const GeneratedQuestions = () => {
     useEffect(() => {
         const fetchQuestions = async () => {
             try {
-                const res = await fetch('https://vidyasetu-ai.onrender.com/api/ai/assignment-generate', {
+                const res = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/ai/assignment-generate`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

@@ -1,11 +1,9 @@
 import Badge from '@/components/ui/Badge'
-import { useAppSelector } from '@/hooks/redux'
 import supabase from '@/lib/supabase'
-import { Ionicons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
-import { Link, router, useLocalSearchParams } from 'expo-router'
+import { useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -16,7 +14,7 @@ interface BadgeProp {
 
 
 const FriendProfile = () => {
-  const {friend_id} = useLocalSearchParams();
+  const { friend_id } = useLocalSearchParams();
   const [user, setUser] = useState<any>();
   const [xp, setXp] = useState<any>(0);
   const [badges, setBadges] = useState<BadgeProp[]>([]);
@@ -24,24 +22,24 @@ const FriendProfile = () => {
 
 
 
-  const fetchBadges = async() => {
-    try{
+  const fetchBadges = async () => {
+    try {
       const { data, error } = await supabase.from("badges").select("*");
-      if(error) throw error;
-      setBadges(data);    
-    } catch(error:any) {
+      if (error) throw error;
+      setBadges(data);
+    } catch (error: any) {
       console.log("Error fetching the badges");
       console.log(error);
     }
   }
 
-  const fetchUserDetails = async() => {
-    try{
+  const fetchUserDetails = async () => {
+    try {
       const { data, error } = await supabase.from("users").select("*").eq("id", friend_id).single();
-      if(error) throw error;
+      if (error) throw error;
       setUser(data);
       setXp(data?.xp);
-    } catch(error:any) {
+    } catch (error: any) {
       console.log("Error fetching the badges");
       console.log(error);
     }
@@ -49,12 +47,12 @@ const FriendProfile = () => {
 
   useEffect(() => {
     fetchBadges();
-  })
-  
+  }, [])
+
   useEffect(() => {
     fetchUserDetails();
 
-  },[]);
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'lightblue' }}>
@@ -63,54 +61,54 @@ const FriendProfile = () => {
         <Image source={{ uri: user?.avatar }} style={{ width: 270, height: 270, }} />
       </View>
 
-      <ScrollView style={{ padding: 20, backgroundColor: '#fefefe', height: '100%', marginTop: -18, transform:[{translateY:18}] }}>
-        
+      <ScrollView style={{ padding: 20, backgroundColor: '#fefefe', height: '100%', marginTop: -18, transform: [{ translateY: 18 }] }}>
+
         <Text style={{ fontSize: 24, fontFamily: 'Poppins-Bold', marginTop: 10 }}>{user?.full_name}</Text>
         <Text style={{ fontSize: 16, marginBottom: 10, color: 'gray' }}>{user?.email}</Text>
         <View>
           <View>
-          {/* followers and following section */}
-          <View style={{flexDirection:"row", padding:12, justifyContent:"space-around",margin:4,}}>
-            {/* following */}
+            {/* followers and following section */}
+            <View style={{ flexDirection: "row", padding: 12, justifyContent: "space-around", margin: 4, }}>
+              {/* following */}
+              <View>
+                {/* <Text style={styles.followNumber}>15</Text> */}
+                <Text style={styles.followText}>{1} Follower</Text>
+              </View>
+              {/* line */}
+              <View style={{ width: 2, backgroundColor: "#aaa", borderRadius: 2 }}></View>
+              {/* followers */}
+              <View>
+                {/* <Text style={styles.followNumber}>15</Text> */}
+                <Text style={styles.followText}>{0} Following</Text>
+              </View>
+            </View>
+
+            <Text style={styles.headerText}>Overview</Text>
+            {/* XP */}
+            <View style={styles.XPContainer}>
+              <Image source={require("@/assets/images/High Voltage.png")} style={{ width: 25, height: 35 }} />
+              <View style={{}}>
+                <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 20, marginBottom: -8 }}>{xp}</Text>
+                <Text style={{ fontFamily: "Poppins-Bold", fontSize: 12, color: "#555" }}>Total XP</Text>
+              </View>
+            </View>
+
+            <Text style={styles.headerText}>Badges</Text>
+            <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 12, marginTop: -12 }}>Unlock all bagdes by completing quizzes and earning XP points.</Text>
             <View>
-              {/* <Text style={styles.followNumber}>15</Text> */}
-              <Text style={styles.followText}>{1} Follower</Text>
-            </View>
-            {/* line */}
-            <View style={{width:2, backgroundColor:"#aaa", borderRadius:2}}></View>
-            {/* followers */}
-            <View>
-              {/* <Text style={styles.followNumber}>15</Text> */}
-              <Text style={styles.followText}>{0} Following</Text>
-            </View>
-          </View>
+              <FlatList
+                horizontal
+                data={badges}
+                renderItem={(item) => (<Badge url={item.item.url} xp={item.item.xp} userXp={xp} />)}
+                ListEmptyComponent={(<View style={{ marginBottom: 200 }}></View>)}
+              />
 
-          <Text style={styles.headerText}>Overview</Text>
-          {/* XP */}
-          <View style={styles.XPContainer}>
-            <Image source={require("@/assets/images/High Voltage.png")} style={{width:25, height:35}}/>
-            <View style={{}}>
-              <Text style={{fontFamily:"Poppins-SemiBold", fontSize:20, marginBottom:-8}}>{xp}</Text>
-              <Text style={{fontFamily:"Poppins-Bold", fontSize:12, color:"#555"}}>Total XP</Text>
+              <View style={{ marginBottom: 100 }}></View>
+
             </View>
-          </View>
-
-          <Text style={styles.headerText}>Badges</Text>
-          <Text style={{ fontFamily:"Poppins-SemiBold", fontSize:12, marginTop:-12 }}>Unlock all bagdes by completing quizzes and earning XP points.</Text>
-          <View>
-            <FlatList
-              horizontal
-              data={badges}
-              renderItem={(item) => (<Badge url={item.item.url} xp={item.item.xp} userXp={xp} />)}
-              ListEmptyComponent={(<View style={{marginBottom:200}}></View>)}
-            />
-
-            <View style={{marginBottom:100}}></View>
-            
           </View>
         </View>
-        </View>
-        <View style={{marginBottom:20}}></View>
+        <View style={{ marginBottom: 20 }}></View>
       </ScrollView>
 
 
@@ -123,32 +121,32 @@ export default FriendProfile
 
 const styles = StyleSheet.create({
   XPContainer: {
-    flexDirection:"row",
-    alignItems:"center",
-    justifyContent:"flex-start",
-    gap:10,
-    padding:10,
-    borderRadius:18,
-    borderWidth:2,
-    width:"45%",
-    borderColor:"#ddddddff",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 10,
+    padding: 10,
+    borderRadius: 18,
+    borderWidth: 2,
+    width: "45%",
+    borderColor: "#ddddddff",
   },
   addFriendsButton: {
-    width:"100%",
-    padding:8,
-    flexDirection:"row",
-    justifyContent:"center",
-    alignItems:"center",
-    gap:10,
-    borderColor:"#ddddddff",
-    borderBottomWidth:6,
-    borderWidth:2,
-    borderRadius:12,
+    width: "100%",
+    padding: 8,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    borderColor: "#ddddddff",
+    borderBottomWidth: 6,
+    borderWidth: 2,
+    borderRadius: 12,
   },
-  headerText: {fontFamily:"Poppins-Bold", fontSize:24, marginVertical:4},
+  headerText: { fontFamily: "Poppins-Bold", fontSize: 24, marginVertical: 4 },
   followText: {
     fontFamily: "Poppins-SemiBold",
-    fontSize:16
+    fontSize: 16
   },
   followNumber: {
 
@@ -162,9 +160,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
-    zIndex:100,
-    width:"100%",
-    height:"120%"
+    zIndex: 100,
+    width: "100%",
+    height: "120%"
   },
   modalContent: {
     width: "95%",

@@ -23,8 +23,6 @@
       "package": "com.abhijit969.vidyasetu"
     },
     "web": {
-      "output": "server",
-      "bundler": "metro",
       "favicon": "./assets/images/favicon.png"
     },
     "githubUrl": "https://github.com/vishnuprasad2004/vidyasetu/",

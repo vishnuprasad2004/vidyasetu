@@ -77,7 +77,7 @@ const BuddyChatBS = ({ bottomSheetModalRef }: BuddyChatBSProps) => {
             };
 
             const response = await fetch(
-                "https://vidyasetu-ai.onrender.com/api/ai/chat",
+                `${process.env.EXPO_PUBLIC_API_BASE_URL}/ai/chat`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

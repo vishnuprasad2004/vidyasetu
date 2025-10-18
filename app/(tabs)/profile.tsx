@@ -32,11 +32,11 @@ const ProfileScreen = () => {
       return;
     }
     try {
-      const { data, error } = await supabase.from("users").select("id").eq("email",friendEmail.trim()).single();
-      if(error) {
+      const { data, error } = await supabase.from("users").select("id").eq("email", friendEmail.trim()).single();
+      if (error) {
         throw error;
       }
-      const { data:friendsData, error:friendsError } = await supabase.from("friends").insert({
+      const { data: friendsData, error: friendsError } = await supabase.from("friends").insert({
         user_id: user?.id, // Current user's ID
         follower: data.id, // Friend's email
       });
@@ -57,38 +57,38 @@ const ProfileScreen = () => {
     }
   };
 
-  const fetchFriends = async() => {
-    try{
+  const fetchFriends = async () => {
+    try {
       const { data, error } = await supabase.from("friends").select(`
         follower(id,avatar,full_name,xp)  
       `).eq("user_id", user.id);
       setFriendsData(data);
-      if(error) throw error; 
+      if (error) throw error;
       console.log(data);
-    } catch(error:any) {
+    } catch (error: any) {
       console.log("Error fetching the badges");
       console.log(error);
     }
   }
 
-  const fetchBadges = async() => {
-    try{
+  const fetchBadges = async () => {
+    try {
       const { data, error } = await supabase.from("badges").select("*");
-      if(error) throw error;
-      setBadges(data);    
-    } catch(error:any) {
+      if (error) throw error;
+      setBadges(data);
+    } catch (error: any) {
       console.log("Error fetching the badges");
       console.log(error);
     }
   }
 
-  const fetchUserDetails = async() => {
-    try{
+  const fetchUserDetails = async () => {
+    try {
       const { data, error } = await supabase.from("users").select("*").eq("id", user.id).single();
-      if(error) throw error;
+      if (error) throw error;
       // setBadges(data);
       setXp(data.xp);
-    } catch(error:any) {
+    } catch (error: any) {
       console.log("Error fetching the badges");
       console.log(error);
     }
@@ -96,128 +96,128 @@ const ProfileScreen = () => {
 
   useEffect(() => {
     fetchBadges();
-  })
-  
+  }, []);
+
   useEffect(() => {
     fetchUserDetails();
     fetchFriends();
     setIsAddFriendModalVisible(false);
-  },[]);
+  }, []);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'lightblue' }}>
       {/* <StatusBar backgroundColor='lightblue'/> */}
 
-      <TouchableOpacity activeOpacity={1} style={{ position:"absolute", top:40, right:20, zIndex:22 }} onPress={()=> {router.push("/settings")}}>
-        <Ionicons name="settings-outline" size={26} color="black" style={{}}/>
+      <TouchableOpacity activeOpacity={1} style={{ position: "absolute", top: 40, right: 20, zIndex: 22 }} onPress={() => { router.push("/settings") }}>
+        <Ionicons name="settings-outline" size={26} color="black" style={{}} />
       </TouchableOpacity>
 
       <View style={{ alignItems: 'center', backgroundColor: 'lightblue', overflow: 'hidden', height: 200 }}>
         <Image source={{ uri: 'https://yjdpdbovskmuuxxkauxj.supabase.co/storage/v1/object/sign/assets/avatars/avatar_4.svg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV80YTIwYzQ2YS1iMmEzLTRlZWItOTFiNS0yYmUxNTg4NTVmNWMiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJhc3NldHMvYXZhdGFycy9hdmF0YXJfNC5zdmciLCJpYXQiOjE3NjAxNTQ2MzIsImV4cCI6NDkxMzc1NDYzMn0.AsyuRrUbzMlSjDEBCAH11VGhHubi5e4LCz2DWcsN_e4' }} style={{ width: 270, height: 270, }} />
       </View>
 
-      <ScrollView style={{ padding: 20, backgroundColor: '#fefefe', height: '100%', marginTop: -18, transform:[{translateY:18}] }}>
-        
+      <ScrollView style={{ padding: 20, backgroundColor: '#fefefe', height: '100%', marginTop: -18, transform: [{ translateY: 18 }] }}>
+
         <Text style={{ fontSize: 24, fontFamily: 'Poppins-Bold', marginTop: 10 }}>{user.name}</Text>
         <Text style={{ fontSize: 16, marginBottom: 10, color: 'gray' }}>{user.email}</Text>
         <View>
           <View>
-          {/* followers and following section */}
-          <View style={{flexDirection:"row", padding:12, justifyContent:"space-around",margin:4,}}>
-            {/* following */}
+            {/* followers and following section */}
+            <View style={{ flexDirection: "row", padding: 12, justifyContent: "space-around", margin: 4, }}>
+              {/* following */}
+              <View>
+                {/* <Text style={styles.followNumber}>15</Text> */}
+                <Text style={styles.followText}>{0} Follower</Text>
+              </View>
+              {/* line */}
+              <View style={{ width: 2, backgroundColor: "#aaa", borderRadius: 2 }}></View>
+              {/* followers */}
+              <View>
+                {/* <Text style={styles.followNumber}>15</Text> */}
+                <Text style={styles.followText}>{1} Following</Text>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              activeOpacity={0.6}
+              style={styles.addFriendsButton}
+              onPress={() => setIsAddFriendModalVisible(true)}
+            >
+              <Ionicons name="person-add" size={20} color="#1cb0f6" />
+              <Text style={{ color: "#1cb0f6", fontFamily: "Poppins-SemiBold", fontSize: 16 }}>ADD FRIENDS</Text>
+            </TouchableOpacity>
+
+            <Text style={styles.headerText}>Friends</Text>
             <View>
-              {/* <Text style={styles.followNumber}>15</Text> */}
-              <Text style={styles.followText}>{0} Follower</Text>
+              <FlatList
+                horizontal
+                data={friendsData}
+                renderItem={(item) => (
+                  <Link href={{ pathname: "/friend-profile", params: { friend_id: item.item.follower.id } }}>
+                    <Image source={{ uri: item.item.follower.avatar }} style={{ height: 60, width: 60, borderRadius: 70, backgroundColor: "wheat" }} />
+                  </Link>
+                )}
+              />
             </View>
-            {/* line */}
-            <View style={{width:2, backgroundColor:"#aaa", borderRadius:2}}></View>
-            {/* followers */}
+
+            <Text style={styles.headerText}>Overview</Text>
+            {/* XP */}
+            <View style={styles.XPContainer}>
+              <Image source={require("@/assets/images/High Voltage.png")} style={{ width: 25, height: 35 }} />
+              <View style={{}}>
+                <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 20, marginBottom: -8 }}>{xp}</Text>
+                <Text style={{ fontFamily: "Poppins-Bold", fontSize: 12, color: "#555" }}>Total XP</Text>
+              </View>
+            </View>
+
+            <Text style={styles.headerText}>Badges</Text>
+            <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 12, marginTop: -12 }}>Unlock all bagdes by completing quizzes and earning XP points.</Text>
             <View>
-              {/* <Text style={styles.followNumber}>15</Text> */}
-              <Text style={styles.followText}>{1} Following</Text>
+              <FlatList
+                horizontal
+                data={badges}
+                renderItem={(item) => (<Badge url={item.item.url} xp={item.item.xp} userXp={xp} />)}
+                ListEmptyComponent={(<View style={{ marginBottom: 200 }}></View>)}
+              />
+
+              <View style={{ marginBottom: 100 }}></View>
+
             </View>
-          </View>
-
-          <TouchableOpacity
-            activeOpacity={0.6}
-            style={styles.addFriendsButton}
-            onPress={() => setIsAddFriendModalVisible(true)}
-          >
-            <Ionicons name="person-add" size={20} color="#1cb0f6" />
-            <Text style={{color:"#1cb0f6", fontFamily:"Poppins-SemiBold", fontSize:16}}>ADD FRIENDS</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.headerText}>Friends</Text>
-          <View>
-            <FlatList
-              horizontal
-              data={friendsData}
-              renderItem={(item) => (
-                <Link href={{ pathname:"/friend-profile", params: { friend_id: item.item.follower.id } }}>
-                  <Image source={{uri: item.item.follower.avatar}} style={{ height:60, width:60, borderRadius:70, backgroundColor:"wheat" }}/>
-                </Link>
-              )}
-            />
-          </View>
-
-          <Text style={styles.headerText}>Overview</Text>
-          {/* XP */}
-          <View style={styles.XPContainer}>
-            <Image source={require("@/assets/images/High Voltage.png")} style={{width:25, height:35}}/>
-            <View style={{}}>
-              <Text style={{fontFamily:"Poppins-SemiBold", fontSize:20, marginBottom:-8}}>{xp}</Text>
-              <Text style={{fontFamily:"Poppins-Bold", fontSize:12, color:"#555"}}>Total XP</Text>
-            </View>
-          </View>
-
-          <Text style={styles.headerText}>Badges</Text>
-          <Text style={{ fontFamily:"Poppins-SemiBold", fontSize:12, marginTop:-12 }}>Unlock all bagdes by completing quizzes and earning XP points.</Text>
-          <View>
-            <FlatList
-              horizontal
-              data={badges}
-              renderItem={(item) => (<Badge url={item.item.url} xp={item.item.xp} userXp={xp} />)}
-              ListEmptyComponent={(<View style={{marginBottom:200}}></View>)}
-            />
-
-            <View style={{marginBottom:100}}></View>
-            
           </View>
         </View>
-        </View>
-        <View style={{marginBottom:20}}></View>
+        <View style={{ marginBottom: 20 }}></View>
       </ScrollView>
 
 
-        {isAddFriendModalVisible && (
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Add Friend</Text>
-              <TextInput
-                style={styles.modalInput}
-                placeholder="Enter friend's email"
-                placeholderTextColor="#888"
-                value={friendEmail}
-                onChangeText={setFriendEmail}
-                keyboardType="email-address"
-              />
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={styles.modalButtonCancel}
-                  onPress={() => {
-                    setIsAddFriendModalVisible(false);
-                    setFriendEmail("");
-                  }}
-                >
-                  <Text style={styles.modalButtonText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.modalButtonAdd} onPress={addFollower}>
-                  <Text style={styles.modalButtonText}>Add</Text>
-                </TouchableOpacity>
-              </View>
+      {isAddFriendModalVisible && (
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add Friend</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Enter friend's email"
+              placeholderTextColor="#888"
+              value={friendEmail}
+              onChangeText={setFriendEmail}
+              keyboardType="email-address"
+            />
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalButtonCancel}
+                onPress={() => {
+                  setIsAddFriendModalVisible(false);
+                  setFriendEmail("");
+                }}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButtonAdd} onPress={addFollower}>
+                <Text style={styles.modalButtonText}>Add</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        )}
+        </View>
+      )}
     </SafeAreaView>
   )
 }
@@ -226,32 +226,32 @@ export default ProfileScreen
 
 const styles = StyleSheet.create({
   XPContainer: {
-    flexDirection:"row",
-    alignItems:"center",
-    justifyContent:"flex-start",
-    gap:10,
-    padding:10,
-    borderRadius:18,
-    borderWidth:2,
-    width:"45%",
-    borderColor:"#ddddddff",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    gap: 10,
+    padding: 10,
+    borderRadius: 18,
+    borderWidth: 2,
+    width: "45%",
+    borderColor: "#ddddddff",
   },
   addFriendsButton: {
-    width:"100%",
-    padding:8,
-    flexDirection:"row",
-    justifyContent:"center",
-    alignItems:"center",
-    gap:10,
-    borderColor:"#ddddddff",
-    borderBottomWidth:6,
-    borderWidth:2,
-    borderRadius:12,
+    width: "100%",
+    padding: 8,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    borderColor: "#ddddddff",
+    borderBottomWidth: 6,
+    borderWidth: 2,
+    borderRadius: 12,
   },
-  headerText: {fontFamily:"Poppins-Bold", fontSize:24, marginVertical:4},
+  headerText: { fontFamily: "Poppins-Bold", fontSize: 24, marginVertical: 4 },
   followText: {
     fontFamily: "Poppins-SemiBold",
-    fontSize:16
+    fontSize: 16
   },
   followNumber: {
 
@@ -265,9 +265,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
-    zIndex:100,
-    width:"100%",
-    height:"120%"
+    zIndex: 100,
+    width: "100%",
+    height: "120%"
   },
   modalContent: {
     width: "95%",

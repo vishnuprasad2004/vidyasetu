@@ -2,8 +2,9 @@ import FloatingChatbot from '@/components/FloatingChatbot'
 import Quiz from '@/components/ui/Quiz'
 import supabase from '@/lib/supabase'
 import { Ionicons } from '@expo/vector-icons'
+import LottieView from 'lottie-react-native'
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 
 interface QuizDetails {
   id: string;
@@ -112,7 +113,15 @@ const QuizScreen = () => {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#111" style={{ marginTop: 50 }} />
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <LottieView
+            source={require("@/assets/animations/loadingAnimation1.json")}
+            style={{ width: "80%", height: "30%" }}
+            loop
+            autoPlay
+          />
+          <Text style={{ color: "#111", fontSize: 20, fontFamily: "Poppins-Bold" }}>Loading quizzes....</Text>
+        </View>
       ) : (
         <FlatList
           data={filteredQuizzes}
